@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="500" viewBox="0 0 1600 500" fill="none">
+<defs><linearGradient id="bg"><stop stop-color="#222922"/><stop offset="1" stop-color="#59604a"/></linearGradient><radialGradient id="glow"><stop stop-color="#cdbb80" stop-opacity=".3"/><stop offset="1" stop-color="#cdbb80" stop-opacity="0"/></radialGradient></defs>
+<path fill="url(#bg)" d="M0 0h1600v500H0z"/><ellipse cx="1330" cy="220" rx="480" ry="450" fill="url(#glow)"/>
+<g stroke="#cdbb80" stroke-opacity=".25" stroke-width="1.5"><path d="M920 520C980 180 1250-80 1640-100M950 540C1020 210 1280-40 1650-60M980 560C1060 240 1310 0 1660-20M1010 580C1100 270 1340 40 1670 20M1040 600C1140 300 1370 80 1680 60M1070 620C1180 330 1400 120 1690 100"/></g>
+<g transform="translate(1170 70) rotate(18)" stroke="#cdbb80" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path fill="#cdbb80" fill-opacity=".08" d="M0 290C-20 170 50-10 170 0C230 100 140 230 0 290Z"/><path d="M-25 350 170 0M10 265l100-26M35 220l107-30M60 175l100-30M85 130l89-28"/></g>
+<circle cx="1080" cy="90" r="3" fill="#cdbb80" fill-opacity=".6"/><circle cx="1500" cy="400" r="4" fill="#cdbb80" fill-opacity=".4"/>
+</svg>
