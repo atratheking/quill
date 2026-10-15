@@ -17,6 +17,7 @@ class QuillSpeech {
     static readonly List<string> words = new List<string>();
     static DateTime started;
     static bool cancelled;
+    static Timer stopTimer;
     static string state = "idle";
     static string microphone = "unknown";
     [DllImport("user32.dll")] static extern IntPtr GetForegroundWindow();
@@ -66,6 +67,7 @@ class QuillSpeech {
             lock(gate) {
                 if(current!=recognizer) return;
                 recognizer=null; state="idle";
+                if(stopTimer!=null) { stopTimer.Dispose(); stopTimer=null; }
                 if(!cancelled) {
                     if(e.Error!=null && words.Count==0) Error(null,"recognition_failed",e.Error.Message);
                     else Emit("final",null,"text",string.Join(" ",words),"duration",(DateTime.UtcNow-started).TotalSeconds,"engine","windows-speech","onDevice",true,"language",info.Culture.Name);
@@ -128,11 +130,29 @@ class QuillSpeech {
                             case "start": Start(c,id); break;
                             case "stop":
                                 if(recognizer==null) Emit("stopped",id);
-                                else { state="stopping"; recognizer.RecognizeAsyncStop(); }
+                                else {
+                                    state="stopping";
+                                    var stopping=recognizer;
+                                    stopTimer=new Timer(_=> {
+                                        lock(gate) {
+                                            if(recognizer!=stopping) return;
+                                            recognizer=null; state="idle";
+                                            stopTimer.Dispose(); stopTimer=null;
+                                            Emit("final",null,"text",string.Join(" ",words),"duration",(DateTime.UtcNow-started).TotalSeconds,"reason","timeout");
+                                            ThreadPool.QueueUserWorkItem(x=> { try { stopping.RecognizeAsyncCancel(); } finally { stopping.Dispose(); } });
+                                        }
+                                    },null,6000,Timeout.Infinite);
+                                    stopping.RecognizeAsyncStop();
+                                }
                                 break;
                             case "cancel":
                                 cancelled=true;
-                                if(recognizer!=null) { state="stopping"; recognizer.RecognizeAsyncCancel(); }
+                                if(stopTimer!=null) { stopTimer.Dispose(); stopTimer=null; }
+                                if(recognizer!=null) {
+                                    var retiring=recognizer; recognizer=null;
+                                    ThreadPool.QueueUserWorkItem(_=> { try { retiring.RecognizeAsyncCancel(); } finally { retiring.Dispose(); } });
+                                }
+                                state="idle";
                                 Emit("cancelled",id); break;
                             default: Error(id,"invalid_command","Unknown command."); break;
                         }
