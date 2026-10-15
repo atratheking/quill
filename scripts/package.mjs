@@ -1,8 +1,9 @@
 import { packager } from "@electron/packager";
-import { mkdir, copyFile } from "node:fs/promises";
+import { mkdir, copyFile, readFile } from "node:fs/promises";
 import { execFileSync } from "node:child_process";
 import path from "node:path";
 const root = process.cwd();
+const manifest = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
 const windows = process.platform === "win32";
 if (!windows && process.platform !== "darwin") throw new Error("Build on macOS or Windows.");
 execFileSync(windows ? "powershell.exe" : path.join(root, "native/build.sh"), windows
@@ -12,8 +13,8 @@ const outputs = await packager({
   dir: root, out: path.join(root, "release"), name: "Quill",
   platform: windows ? "win32" : "darwin", arch: windows ? "x64" : "arm64",
   appBundleId: "ai.quill.local", appCategoryType: "public.app-category.productivity",
-  appVersion: "1.0.0", overwrite: true, asar: true, prune: true,
-  ...(windows ? {} : { icon: path.join(root, "public/quill.icns") }),
+  appVersion: manifest.version, overwrite: true, asar: true, prune: true,
+  icon: path.join(root, windows ? "public/quill.ico" : "public/quill.icns"),
   ignore: [
     /^\/(?:output|research|release|native|tests|scripts|\.git|\.github)(?:\/|$)/,
     /^\/public\/assets\/images\/(?:home|library)-banner\.png$/,

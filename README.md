@@ -19,7 +19,7 @@ Text cleanup uses local rules. Team accounts, cloud sync, and Wispr’s AI rewri
 
 Windows 10/11 x64 is supported by a native .NET Framework speech helper. This port is a preview: automated compilation and protocol checks run on Windows, but live microphone recognition and cross-app paste still need testing on a Windows desktop.
 
-Download the portable ZIP from the latest successful [Windows build](https://github.com/atratheking/quill/actions/workflows/windows.yml) under **Artifacts** (GitHub sign-in required). Extract the complete ZIP, then run `Quill.exe`. Keep its resources alongside the executable. The build is unsigned.
+Download **Quill-Windows-x64.zip** from [GitHub Releases](https://github.com/atratheking/quill/releases). Automated builds are also available under **Artifacts** in the [Windows build workflow](https://github.com/atratheking/quill/actions/workflows/windows.yml) (sign-in required for workflow artifacts). Extract the complete ZIP, then run `Quill.exe`. Keep its resources alongside the executable. The build is unsigned.
 
 Install a speech language under **Settings → Time & language → Speech**, and enable microphone access for desktop apps under **Privacy & security → Microphone**. The selected Quill language must match an installed recognizer; a recognizer for the same language can be used when the exact region is unavailable.
 

@@ -1,7 +1,7 @@
 {
   "name": "quill-desktop-local",
   "productName": "Quill",
-  "version": "1.0.0",
+  "version": "1.1.0-preview.1",
   "private": true,
   "type": "module",
   "main": "electron/main.cjs",

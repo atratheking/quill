@@ -123,6 +123,7 @@ function createHub() {
     minWidth: 820,
     minHeight: 600,
     title: "Quill",
+    icon: path.join(root, isWindows ? "public/quill.ico" : "public/quill.icns"),
     backgroundColor: "#F5F4F0",
     titleBarStyle: "hidden",
     ...(isWindows ? { titleBarOverlay: { color: "#F5F4F0", symbolColor: "#242621", height: 36 } } : {}),
