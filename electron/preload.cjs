@@ -1,6 +1,7 @@
 const { contextBridge, ipcRenderer } = require("electron");
 const requests = new Set([
   "store:get",
+  "theme:set",
   "store:set",
   "speech:toggle",
   "speech:stop",

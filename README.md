@@ -11,6 +11,7 @@ Quill is an independent project inspired by Wispr Flow. It uses its own implemen
 - Browse local dictation history, search transcripts, and copy text.
 - Manage dictionary terms, snippets, writing preferences, and notes.
 - Keep the overlay hidden while idle, or enable an always-visible bar in settings.
+- Choose Light, Dark, or System under Settings → General → Appearance; the choice is saved locally.
 - Check microphone, speech recognition, and Accessibility permissions in the app.
 
 Text cleanup uses local rules. Team accounts, cloud sync, and Wispr’s AI rewriting are not implemented.

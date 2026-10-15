@@ -502,6 +502,15 @@ app.on("before-quit", () => {
   helper?.kill();
 });
 app.on("window-all-closed", () => {});
+ipcMain.handle("theme:set", (_, theme) => {
+  if (theme !== "light" && theme !== "dark") throw new Error("Invalid theme");
+  if (!hub || hub.isDestroyed()) return;
+  hub.setBackgroundColor(theme === "dark" ? "#1b1d19" : "#F5F4F0");
+  if (isWindows) hub.setTitleBarOverlay({
+    color: theme === "dark" ? "#1b1d19" : "#F5F4F0",
+    symbolColor: theme === "dark" ? "#eeeade" : "#242621",
+  });
+});
 ipcMain.handle("store:get", () => store);
 ipcMain.handle("store:set", (_, payload) => {
   if (!payload || !allowedStore.has(payload.key))

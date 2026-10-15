@@ -68,6 +68,7 @@ export const sampleHistory: Dictation[] = [
   },
 ];
 export const defaultSettings: Settings = {
+  theme: "light",
   name: "",
   language: "en-AU",
   cleanup: true,

@@ -43,6 +43,7 @@ import {
   ArrowLeft,
   Pencil,
   RefreshCw,
+  Sun,
   ChevronRight,
 } from "lucide-react";
 import {
@@ -51,6 +52,7 @@ import {
   sampleSnippets,
   defaultSettings,
 } from "./data";
+import { watchTheme } from "./theme.mjs";
 import type { Page, Dictation, Word, Snippet, Settings, Note } from "./types";
 import {
   polishText,
@@ -278,6 +280,14 @@ const time = (date: string) =>
 function App() {
   const { data, update, loaded } = useWorkspace();
   const { history, dictionary, snippets, settings, notes } = data;
+  useEffect(() => watchTheme(settings.theme || "light", {
+    root: document.documentElement,
+    media: window.matchMedia("(prefers-color-scheme: dark)"),
+    onChange: (theme: string) => {
+      if (!new URLSearchParams(location.search).has("overlay"))
+        window.flow?.invoke("theme:set", theme);
+    },
+  }), [settings.theme]);
   const [page, setPage] = useState<Page | "Polish">("Home");
   const [collapsed, setCollapsed] = useState(false);
   const [search, setSearch] = useState("");
@@ -1610,6 +1620,19 @@ function App() {
                   {settingsTab === "General" && (
                     <>
                       <div className="setting-card">
+                        <div className="setting-row">
+                          <span className="setting-icon"><Sun size={20} /></span>
+                          <div>
+                            <strong>Appearance</strong>
+                            <p>Choose a theme or follow your system.</p>
+                          </div>
+                          <select aria-label="Appearance" value={settings.theme || "light"}
+                            onChange={(e) => changeSetting("theme", e.target.value as Settings["theme"])}>
+                            <option value="light">Light</option>
+                            <option value="dark">Dark</option>
+                            <option value="system">System</option>
+                          </select>
+                        </div>
                         <div className="setting-row">
                           <span className="setting-icon">
                             <Keyboard size={20} />

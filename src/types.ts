@@ -31,6 +31,7 @@ export type Snippet = {
   createdAt: string;
 };
 export type Settings = {
+  theme: "light" | "dark" | "system";
   name: string;
   language: string;
   cleanup: boolean;
