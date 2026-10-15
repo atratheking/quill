@@ -475,6 +475,24 @@ app.whenReady().then(async () => {
     });
   }
   startHelper();
+  if (process.argv.includes("--smoke-test")) {
+    // CI exercises the packaged renderer and native bridge without audio or input.
+    const timeout = setTimeout(() => app.exit(1), 15000);
+    const check = async () => {
+      try {
+        if (await hub.webContents.executeJavaScript("document.querySelector('#root').children.length") < 1)
+          throw new Error("Renderer did not mount.");
+        const status = await permissionStatus();
+        if (!status.microphone || !status.speech) throw new Error("Native status unavailable.");
+        console.log("Quill packaged startup check passed.");
+        clearTimeout(timeout);
+        quitting = true;
+        app.quit();
+      } catch (error) { console.error(error); app.exit(1); }
+    };
+    if (hub.webContents.isLoading()) hub.webContents.once("did-finish-load", check);
+    else check();
+  }
   app.on("activate", showHub);
 });
 app.on("before-quit", () => {

@@ -21,6 +21,12 @@ jobs:
       - name: Check native bridge
         shell: pwsh
         run: python native/windows/test_protocol.py
+      - name: Launch packaged app without recording
+        shell: pwsh
+        run: |
+          $app = Start-Process -FilePath release/Quill-win32-x64/Quill.exe -ArgumentList '--smoke-test' -PassThru
+          if (!$app.WaitForExit(30000)) { $app.Kill(); throw 'Packaged startup timed out.' }
+          if ($app.ExitCode -ne 0) { throw "Packaged startup failed: $($app.ExitCode)" }
       - name: Zip portable app
         shell: pwsh
         run: Compress-Archive -Path release/Quill-win32-x64/* -DestinationPath release/Quill-Windows-x64.zip
