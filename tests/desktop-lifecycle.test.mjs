@@ -9,7 +9,7 @@ const source = fs.readFileSync(
   new URL("../electron/main.cjs", import.meta.url),
   "utf8",
 );
-function harness() {
+function harness(platform = "darwin") {
   const commands = [];
   const handlers = new Map();
   const shortcuts = new Map();
@@ -49,7 +49,7 @@ function harness() {
                 ? {}
                 : undefined,
     __dirname: "/local-test/electron",
-    process: { argv: [] },
+    process: { argv: [], platform, pid: 100 },
     crypto,
     setTimeout,
     clearTimeout,
@@ -57,7 +57,7 @@ function harness() {
   });
   vm.runInContext(
     source +
-      "\nglobalThis.api={toggle,nativeEvent,setSpeech,pasteToTarget,syncBarVisibility,getSpeech:()=>speech,setHub:value=>hub=value,setHelper:value=>helper=value,setBar:value=>bar=value,setSettings:value=>store.settings=value};",
+      "\nglobalThis.api={toggle,permissionStatus,nativeEvent,setSpeech,pasteToTarget,syncBarVisibility,getSpeech:()=>speech,setHub:value=>hub=value,setHelper:value=>helper=value,setBar:value=>bar=value,setSettings:value=>store.settings=value};",
     context,
   );
   context.api.setHelper({
@@ -214,4 +214,28 @@ test("a late paste failure preserves a new recording and Escape cancellation", a
   assert.equal(h.getSpeech().status, "idle");
   assert.equal(h.commands.at(-1).type, "cancel");
   assert.equal(h.shortcuts.has("Escape"), false);
+});
+
+test("Windows permission checks do not call the macOS Accessibility API", async () => {
+  const h = harness("win32");
+  const check = h.permissionStatus();
+  h.nativeEvent({type: "status", id: h.commands[0].id, permissions: {
+    accessibility: true, microphone: "unknown", speech: "authorized"
+  }});
+  const result = await check;
+  assert.equal(result.appAccessibility, true);
+  assert.equal(result.speech, "authorized");
+});
+test("Windows preserves the original window handle through start and paste", async () => {
+  const h = harness("win32");
+  const start = h.toggle();
+  h.nativeEvent({type: "frontmost", id: h.commands[0].id, bundleId: "987654", name: "Notepad", pid: 200});
+  await start;
+  assert.equal(h.getSpeech().targetPid, 200);
+  const paste = h.pasteToTarget({bundleId: h.getSpeech().bundleId});
+  const command = h.commands.at(-1);
+  assert.equal(command.bundleId, "987654");
+  h.nativeEvent({type: "pasted", id: command.id, posted: true});
+  await paste;
+  assert.equal(h.getSpeech().pasteStatus, "sent");
 });

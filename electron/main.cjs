@@ -17,6 +17,7 @@ const path = require("node:path");
 const { spawn } = require("node:child_process");
 const { pathToFileURL } = require("node:url");
 app.setName("Quill");
+const isWindows = process.platform === "win32";
 const isDev = process.argv.includes("--dev");
 let hub,
   bar,
@@ -124,6 +125,7 @@ function createHub() {
     title: "Quill",
     backgroundColor: "#F5F4F0",
     titleBarStyle: "hidden",
+    ...(isWindows ? { titleBarOverlay: { color: "#F5F4F0", symbolColor: "#242621", height: 36 } } : {}),
     trafficLightPosition: { x: 18, y: 19 },
     webPreferences: {
       preload: path.join(__dirname, "preload.cjs"),
@@ -211,7 +213,7 @@ async function pasteToTarget(target) {
         result.code === "accessibility_permission_denied"
           ? "Your words were copied, but macOS has not authorized this copy of Quill to paste. Reconnect Quill in System Settings → Privacy & Security → Accessibility, then use Recheck access below."
           : result.message ||
-              "Your words were copied, but the paste command failed. You can paste them with Command + V.",
+              `Your words were copied, but the paste command failed. You can paste them with ${isWindows ? "Ctrl" : "Command"} + V.`,
       );
       return;
     }
@@ -227,7 +229,7 @@ async function permissionStatus() {
   const result = await requestNative("status");
   return {
     accessibility: result.permissions?.accessibility === true,
-    appAccessibility: systemPreferences.isTrustedAccessibilityClient(false),
+    appAccessibility: isWindows || systemPreferences.isTrustedAccessibilityClient(false),
     microphone: result.permissions?.microphone || "unknown",
     speech: result.permissions?.speech || "unknown",
   };
@@ -263,7 +265,8 @@ async function completeDictation(event) {
     if (
       store.settings?.autoPaste !== false &&
       target.bundleId &&
-      target.bundleId !== "ai.quill.local"
+      target.bundleId !== "ai.quill.local" &&
+      (!isWindows || speech.targetPid !== process.pid)
     ) {
       bar?.hide();
       await pasteToTarget(target);
@@ -276,18 +279,18 @@ async function completeDictation(event) {
     });
 }
 function startHelper() {
-  const executable = app.isPackaged
-    ? path.join(process.resourcesPath, "native/bin/flow-speech")
-    : path.join(root, "native/bin/flow-speech");
+  const helperName = isWindows ? "quill-speech.exe" : "flow-speech";
+  const executable = path.join(app.isPackaged ? process.resourcesPath : root, "native/bin", helperName);
   if (!fs.existsSync(executable)) {
     setSpeech({
       status: "error",
       error:
-        "The speech helper is missing. Run native/build.sh and reopen the app.",
+        isWindows ? "The speech helper is missing. Run native/windows/build.ps1 and reopen Quill." : "The speech helper is missing. Run native/build.sh and reopen the app.",
     });
     return;
   }
-  helper = spawn(executable, [], { stdio: ["pipe", "pipe", "pipe"] });
+  helper = spawn(executable, [], { stdio: ["pipe", "pipe", "pipe"], windowsHide: true });
+  helper.stdout.setEncoding("utf8");
   helper.stdin.on("error", (error) => {
     if (!quitting) setSpeech({ status: "error", error: error.message });
   });
@@ -387,6 +390,7 @@ async function toggle() {
     error: "",
     app: target.name || "Quill",
     bundleId: target.bundleId || "",
+    targetPid: target.pid,
   });
   try {
     sendNative({
@@ -432,8 +436,13 @@ app.whenReady().then(async () => {
   const icon = nativeImage.createFromDataURL(
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAUUlEQVR4nGNgGAWjYBSMglEwCkbBKBgFo2AUjIJRMApGwSgYBaNgFIyCUTAKRsEoGAWjYBSMglEwCkbBKBgFo2AUjIJRMApGwSgYBaNgFAAAcAQAAScRjEgAAAAASUVORK5CYII=",
   );
-  icon.setTemplateImage(true);
-  tray = new Tray(icon);
+  if (isWindows) {
+    const trayIcon = nativeImage.createFromPath(path.join(root, "public/quill.iconset/icon_32x32.png"));
+    tray = new Tray(trayIcon);
+  } else {
+    icon.setTemplateImage(true);
+    tray = new Tray(icon);
+  }
   tray.setTitle("▥");
   tray.setToolTip("Quill");
   tray.setContextMenu(
@@ -500,7 +509,7 @@ ipcMain.handle("speech:state", () => speech);
 ipcMain.handle("speech:status", () => requestNative("status"));
 ipcMain.handle("permissions:status", permissionStatus);
 ipcMain.handle("settings:locate-app", () => {
-  const bundle = app.isPackaged
+  const bundle = app.isPackaged && !isWindows
     ? path.dirname(path.dirname(path.dirname(process.execPath)))
     : process.execPath;
   shell.showItemInFolder(bundle);
@@ -517,6 +526,9 @@ ipcMain.handle("clipboard:copy", (_, text) => {
 ipcMain.handle("shortcut:set", (_, shortcut) => registerShortcut(shortcut));
 ipcMain.handle("app:version", () => app.getVersion());
 ipcMain.handle("settings:open-permissions", (_, kind) => {
+  if (isWindows) {
+    return shell.openExternal(kind === "microphone" ? "ms-settings:privacy-microphone" : "ms-settings:speech");
+  }
   if (kind === "accessibility")
     systemPreferences.isTrustedAccessibilityClient(true);
   const suffix =

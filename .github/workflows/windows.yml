@@ -1,0 +1,31 @@
+name: Windows build
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run package:windows
+      - name: Check native bridge
+        shell: pwsh
+        run: python native/windows/test_protocol.py
+      - name: Zip portable app
+        shell: pwsh
+        run: Compress-Archive -Path release/Quill-win32-x64/* -DestinationPath release/Quill-Windows-x64.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Quill-Windows-x64
+          path: release/Quill-Windows-x64.zip
+          if-no-files-found: error

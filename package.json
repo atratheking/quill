@@ -10,7 +10,8 @@
     "build": "tsc --noEmit && vite build",
     "test": "node --test tests/*.test.mjs",
     "desktop": "electron .",
-    "package:mac": "npm run build && node scripts/package.mjs"
+    "package:mac": "npm run build && node scripts/package.mjs",
+    "package:windows": "npm run build && node scripts/package.mjs"
   },
   "dependencies": {
     "react": "19.3.1",

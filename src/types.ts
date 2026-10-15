@@ -59,6 +59,7 @@ export type SpeechEvent = {
 declare global {
   interface Window {
     flow?: {
+      platform: string;
       invoke: (channel: string, payload?: unknown) => Promise<any>;
       on: (channel: string, callback: (event: any) => void) => () => void;
     };

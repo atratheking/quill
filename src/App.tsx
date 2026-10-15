@@ -132,12 +132,13 @@ function Logo() {
     </div>
   );
 }
+const isWindows = window.flow?.platform === "win32" || navigator.userAgent.includes("Windows");
 function shortcutKeys(shortcut: string) {
   return shortcut
-    .replace("CommandOrControl", "⌘")
-    .replace("Control", "⌃")
-    .replace("Alt", "⌥")
-    .replace("Shift", "⇧")
+    .replace("CommandOrControl", isWindows ? "Ctrl" : "⌘")
+    .replace("Control", isWindows ? "Ctrl" : "⌃")
+    .replace("Alt", isWindows ? "Alt" : "⌥")
+    .replace("Shift", isWindows ? "Shift" : "⇧")
     .split("+");
 }
 function Shortcut({
@@ -634,7 +635,7 @@ function App() {
   return (
     <div
       className={
-        "app " + (collapsed ? "collapsed " : "") + (window.flow ? "native" : "")
+        "app " + (isWindows ? "windows " : "") + (collapsed ? "collapsed " : "") + (window.flow ? "native" : "")
       }
     >
       <header className="titlebar">
@@ -824,7 +825,7 @@ function App() {
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                   />
-                  <kbd>⌘ F</kbd>
+                  <kbd>{isWindows ? "Ctrl F" : "⌘ F"}</kbd>
                 </label>
               </div>
               {!realHistory.length && !search && (
@@ -899,7 +900,7 @@ function App() {
               )}
               <div className="history-footer">
                 <Shield size={13} />
-                <span>Your dictations are saved on this Mac.</span>
+                <span>Your dictations are saved on this computer.</span>
                 <button
                   onClick={() => {
                     setPage("Settings");
@@ -1637,11 +1638,11 @@ function App() {
                             }}
                           >
                             <option value="CommandOrControl+Shift+Space">
-                              ⌘ ⇧ Space
+                              {isWindows ? "Ctrl Shift Space" : "⌘ ⇧ Space"}
                             </option>
-                            <option value="Control+Alt+Space">⌃ ⌥ Space</option>
+                            <option value="Control+Alt+Space">{isWindows ? "Ctrl Alt Space" : "⌃ ⌥ Space"}</option>
                             <option value="CommandOrControl+Shift+D">
-                              ⌘ ⇧ D
+                              {isWindows ? "Ctrl Shift D" : "⌘ ⇧ D"}
                             </option>
                           </select>
                         </div>
@@ -1651,7 +1652,7 @@ function App() {
                           </span>
                           <div>
                             <strong>Microphone</strong>
-                            <p>Uses your Mac’s selected input device.</p>
+                            <p>Uses your computer’s default input device.</p>
                           </div>
                           <span className="subtle-badge">System default</span>
                         </div>
@@ -1702,7 +1703,7 @@ function App() {
                             <p>
                               Insert your words where your cursor was.
                               <br />
-                              Requires macOS Accessibility permission.
+                              {isWindows ? "Pastes with Ctrl+V into the original app." : "Requires macOS Accessibility permission."}
                             </p>
                           </div>
                           <Toggle
@@ -1729,12 +1730,12 @@ function App() {
                       <div className="engine-note">
                         <Shield size={17} />
                         <p>
-                          <strong>Powered by Apple Speech</strong>
+                          <strong>{isWindows ? "Powered by Windows Speech" : "Powered by Apple Speech"}</strong>
                           <br />
-                          Recognition runs on device when supported. Apple’s
+                          {isWindows ? "Recognition uses an installed Windows speech language and runs locally. Dictionary corrections and snippets apply after transcription." : <>Recognition runs on device when supported. Apple’s
                           speech service may be used if local recognition is
                           unavailable.
-                        </p>
+                        </>}</p>
                       </div>
                     </>
                   )}
@@ -1756,7 +1757,7 @@ function App() {
                           />
                         </div>
                       </div>
-                      <h3 className="settings-subheading">macOS permissions</h3>
+                      <h3 className="settings-subheading">{isWindows ? "Windows speech and microphone" : "macOS permissions"}</h3>
                       {[
                         {
                           title: "Microphone",
@@ -1765,7 +1766,7 @@ function App() {
                         },
                         {
                           title: "Speech Recognition",
-                          text: "Turn your voice into text with Apple Speech.",
+                          text: isWindows ? "Uses an installed Windows speech recognition language." : "Turn your voice into text with Apple Speech.",
                           kind: "speech",
                         },
                         {
@@ -1773,7 +1774,7 @@ function App() {
                           text: "Paste dictated words into your other apps.",
                           kind: "accessibility",
                         },
-                      ].map((p) => (
+                      ].filter(p => !isWindows || p.kind !== "accessibility").map((p) => (
                         <div
                           className="setting-row permission-row"
                           key={p.kind}
@@ -1798,7 +1799,7 @@ function App() {
                                         ? permissions.microphone
                                         : permissions.speech) === "authorized"
                                     ? "Enabled"
-                                    : "Not enabled"}
+                                    : isWindows && p.kind === "microphone" ? "Checked when dictation starts" : "Not enabled"}
                               </p>
                             )}
                           </div>
@@ -1811,7 +1812,7 @@ function App() {
                                     p.kind,
                                   )
                                 : notify(
-                                    "Open the desktop app to manage macOS permissions.",
+                                    "Open the desktop app to manage permissions.",
                                   )
                             }
                           >
@@ -1841,7 +1842,7 @@ function App() {
                           </button>
                         </div>
                       )}
-                      {permissions && !permissions.accessibility && (
+                      {!isWindows && permissions && !permissions.accessibility && (
                         <div className="engine-note">
                           <Shield size={18} />
                           <p>
@@ -1885,7 +1886,7 @@ function App() {
                       <div className="engine-note">
                         <Shield size={20} />
                         <p>
-                          Your workspace stays on this Mac. No account or
+                          Your workspace stays on this computer. No account or
                           subscription is required for this local build.
                         </p>
                       </div>
@@ -1944,10 +1945,10 @@ function App() {
                       <div className="engine-note">
                         <HelpCircle size={19} />
                         <p>
-                          Apple may process audio when on-device speech
+                          {isWindows ? "Windows speech recognition runs locally. No audio is saved by Quill." : <>Apple may process audio when on-device speech
                           recognition is unavailable. This build does not
                           connect to Wispr’s servers.
-                        </p>
+                        </>}</p>
                       </div>
                     </>
                   )}
@@ -2356,7 +2357,7 @@ function App() {
           <div className="shortcut-row">
             <span>Search this page</span>
             <span className="shortcut small">
-              <kbd>⌘</kbd>
+              <kbd>{isWindows ? "Ctrl" : "⌘"}</kbd>
               <kbd>F</kbd>
             </span>
           </div>
@@ -2409,7 +2410,7 @@ function App() {
             experience. Built for the words you haven’t written yet.
           </p>
           <p className="preview-note">
-            Real macOS speech recognition, a global shortcut, personal
+            Native speech recognition, a global shortcut, personal
             vocabulary, snippets, and local history. This build is not connected
             to Wispr’s private AI or cloud services.
           </p>

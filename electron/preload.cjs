@@ -21,6 +21,7 @@ const requests = new Set([
 ]);
 const events = new Set(["speech", "store", "navigate"]);
 contextBridge.exposeInMainWorld("flow", {
+  platform: process.platform,
   invoke: (channel, payload) =>
     requests.has(channel)
       ? ipcRenderer.invoke(channel, payload)

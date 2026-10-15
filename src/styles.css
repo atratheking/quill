@@ -2519,3 +2519,6 @@ body:has(.overlay-shell) #root {
   gap: 9px;
   margin-top: 18px;
 }
+
+/* Reserve the native Windows caption buttons in the title bar. */
+.windows .titlebar-right { margin-right: 140px; }
