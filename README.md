@@ -38,6 +38,14 @@ python native/windows/test_protocol.py
 
 The helper uses installed Windows speech models locally. Dictionary corrections and snippets apply after transcription; Windows vocabulary hinting is not implemented.
 
+## Mac download
+
+Download **Quill-macOS-Apple-Silicon.dmg** from [GitHub Releases](https://github.com/atratheking/quill/releases). Requires an Apple Silicon Mac (M1 or newer) with macOS 13+. Intel Macs are not included in this download.
+
+Open the DMG, drag **Quill.app** into **Applications**, eject the disk, and open Quill from Applications. This preview is locally signed but not Apple-notarized; macOS may require first-launch approval through **System Settings → Privacy & Security → Open Anyway**. See [Apple’s instructions](https://support.apple.com/102445).
+
+Grant Microphone, Speech Recognition, and Accessibility permissions for dictation and automatic paste. The default shortcut is **⌘⇧Space**.
+
 ## Build on your Mac
 
 Requirements: an Apple Silicon Mac running macOS 13 or later, Node.js 24 or later, npm, and Xcode Command Line Tools (`xcode-select --install`). The packaging script currently targets Apple Silicon.
