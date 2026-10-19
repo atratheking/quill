@@ -1,3 +1,4 @@
+import { createPortal } from "react-dom";
 import { useState, useEffect, useRef, useMemo, type ReactNode } from "react";
 import {
   Feather,
@@ -163,11 +164,13 @@ function Modal({
   children,
   onClose,
   wide = false,
+  className = "",
 }: {
   title: string;
   children: ReactNode;
   onClose: () => void;
   wide?: boolean;
+  className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -200,7 +203,7 @@ function Modal({
       prior?.focus();
     };
   }, []);
-  return (
+  return createPortal(
     <div
       className="modal-backdrop"
       onClick={(e) => e.target === e.currentTarget && onClose()}
@@ -210,7 +213,7 @@ function Modal({
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className={"modal " + (wide ? "wide" : "")}
+        className={"modal " + (wide ? "wide " : "") + className}
       >
         <div className="modal-heading">
           <h2>{title}</h2>
@@ -224,7 +227,8 @@ function Modal({
         </div>
         {children}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 function Toggle({
@@ -392,7 +396,7 @@ function App() {
     const key = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "f") {
         e.preventDefault();
-        searchRef.current?.focus();
+        if (page !== "Settings" && !modal && !detail) searchRef.current?.focus();
       }
       if (e.key === "Escape" && speech.status !== "idle") {
         window.flow?.invoke("speech:cancel");
@@ -409,6 +413,7 @@ function App() {
       if (
         page === "Home" &&
         !modal &&
+        !detail &&
         !(
           e.target instanceof HTMLInputElement ||
           e.target instanceof HTMLTextAreaElement
@@ -428,7 +433,7 @@ function App() {
     };
     document.addEventListener("keydown", key);
     return () => document.removeEventListener("keydown", key);
-  }, [page, modal, history, selectedHistory, speech.status]);
+  }, [page, modal, detail, history, selectedHistory, speech.status]);
   const active =
     speech.status === "listening" ||
     speech.status === "starting" ||
@@ -644,6 +649,7 @@ function App() {
     );
   return (
     <div
+      inert={page === "Settings" || modal !== null || detail !== null}
       className={
         "app " + (isWindows ? "windows " : "") + (collapsed ? "collapsed " : "") + (window.flow ? "native" : "")
       }
@@ -766,7 +772,7 @@ function App() {
         }
       >
         <div className="page-content" key={page}>
-          {page === "Home" && (
+          {(page === "Home" || page === "Settings") && (
             <>
               <div className="page-heading home-heading">
                 <h1>Welcome back{settings.name ? `, ${settings.name}` : ""}</h1>
@@ -877,10 +883,6 @@ function App() {
                         >
                           <div className="history-time">
                             {time(entry.createdAt)}
-                            <span>
-                              <AppIcon name={entry.app} />
-                              {entry.app}
-                            </span>
                           </div>
                           <p>{entry.text}</p>
                           <button
@@ -1595,11 +1597,7 @@ function App() {
             </>
           )}
           {page === "Settings" && (
-            <>
-              <div className="page-heading">
-                <h1>Settings</h1>
-                <span className="subtle-badge">Quill · 1.0.0</span>
-              </div>
+            <Modal title="Settings" className="settings-dialog" onClose={() => setPage("Home")}>
               <div className="settings-layout">
                 <nav className="settings-nav">
                   {["General", "System", "Account", "Data & Privacy"].map(
@@ -1977,7 +1975,7 @@ function App() {
                   )}
                 </div>
               </div>
-            </>
+            </Modal>
           )}
           {page === "Help" && (
             <>

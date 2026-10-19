@@ -90,6 +90,7 @@ Build the native helper first with `./native/build.sh` (macOS) or `powershell -F
 ```sh
 npm test
 npm run build
+npm run test:visual:built
 ./native/build.sh
 python3 native/test_protocol.py
 ```
@@ -105,3 +106,7 @@ The repository excludes local workspace data, recordings, research downloads, de
 ## Assets
 
 Quill includes original SVG banner artwork, Figtree and EB Garamond fonts, and Lucide icons. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for credits and included licenses.
+
+## Visual reference checks
+
+Quill’s shared desktop layout was measured against Wispr Flow 1.6.1174 using REA. Run `npm run test:visual` to build and check the rendered layout at three desktop widths, plus Settings focus and dismissal. See [the comparison report](docs/visual-parity.md) for provenance, screenshots, intentional differences, and coverage limits. These checks do not assert full screenshot parity or feature equivalence.

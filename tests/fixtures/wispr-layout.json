@@ -1,0 +1,209 @@
+{
+  "referenceVersion": "1.6.1174",
+  "referenceEvidenceId": "ev_6907af654661a34b05998013b1e55a63672be49fbfecdf467fdc083065619672",
+  "referenceArtifactSha256": "dc56b610fb46d34dabf7871a270f307c665371de3f28b492c687eca2af09faf4",
+  "scope": "Computed CSS in an inert fixture, not signed-in app screenshot parity. See docs/visual-parity.md.",
+  "expected": {
+    "1200-light": {
+      "sidebar": {
+        "width": 216,
+        "y": 52,
+        "height": 758,
+        "paddingLeft": "12px",
+        "paddingRight": "12px",
+        "paddingTop": "12px",
+        "paddingBottom": "12px"
+      },
+      "nav": {
+        "height": 36,
+        "width": 192,
+        "fontSize": "15px",
+        "lineHeight": "20px",
+        "fontWeight": "550",
+        "borderTopLeftRadius": "6px",
+        "paddingLeft": "8px",
+        "paddingRight": "8px",
+        "paddingTop": "8px",
+        "paddingBottom": "8px",
+        "gap": "8px"
+      },
+      "panel": {
+        "x": 216,
+        "y": 52,
+        "width": 976,
+        "height": 750,
+        "borderTopLeftRadius": "24px",
+        "borderBottomLeftRadius": "16px",
+        "backgroundColor": "rgb(252, 252, 251)",
+        "borderTopColor": "rgb(238, 235, 227)"
+      },
+      "heading": {
+        "x": 304,
+        "y": 93,
+        "fontSize": "24px",
+        "lineHeight": "32px",
+        "fontWeight": "600",
+        "color": "rgb(26, 26, 26)"
+      },
+      "historyList": {
+        "x": 304,
+        "width": 800,
+        "borderTopLeftRadius": "16px",
+        "borderTopColor": "rgb(238, 235, 227)"
+      },
+      "historyTime": {
+        "width": 98,
+        "fontSize": "13px",
+        "lineHeight": "20px",
+        "paddingLeft": "16px",
+        "paddingTop": "16px",
+        "color": "rgb(113, 113, 110)"
+      },
+      "historyText": {
+        "x": 403,
+        "width": 700,
+        "fontSize": "15px",
+        "lineHeight": "20px",
+        "fontWeight": "400",
+        "paddingLeft": "16px",
+        "color": "rgb(26, 26, 26)"
+      }
+    },
+    "960-dark": {
+      "sidebar": {
+        "width": 216,
+        "y": 52,
+        "height": 758,
+        "paddingLeft": "12px",
+        "paddingRight": "12px",
+        "paddingTop": "12px",
+        "paddingBottom": "12px"
+      },
+      "nav": {
+        "height": 36,
+        "width": 192,
+        "fontSize": "15px",
+        "lineHeight": "20px",
+        "fontWeight": "550",
+        "borderTopLeftRadius": "6px",
+        "paddingLeft": "8px",
+        "paddingRight": "8px",
+        "paddingTop": "8px",
+        "paddingBottom": "8px",
+        "gap": "8px"
+      },
+      "panel": {
+        "x": 216,
+        "y": 52,
+        "width": 736,
+        "height": 750,
+        "borderTopLeftRadius": "24px",
+        "borderBottomLeftRadius": "16px",
+        "backgroundColor": "rgb(26, 26, 26)",
+        "borderTopColor": "rgb(48, 48, 47)"
+      },
+      "heading": {
+        "x": 257,
+        "y": 93,
+        "fontSize": "24px",
+        "lineHeight": "32px",
+        "fontWeight": "600",
+        "color": "rgb(233, 232, 225)"
+      },
+      "historyList": {
+        "x": 257,
+        "width": 654,
+        "borderTopLeftRadius": "16px",
+        "borderTopColor": "rgb(48, 48, 47)"
+      },
+      "historyTime": {
+        "width": 98,
+        "fontSize": "13px",
+        "lineHeight": "20px",
+        "paddingLeft": "16px",
+        "paddingTop": "16px",
+        "color": "rgb(157, 156, 152)"
+      },
+      "historyText": {
+        "x": 356,
+        "width": 554,
+        "fontSize": "15px",
+        "lineHeight": "20px",
+        "fontWeight": "400",
+        "paddingLeft": "16px",
+        "color": "rgb(233, 232, 225)"
+      }
+    },
+    "1440-dark": {
+      "sidebar": {
+        "width": 216,
+        "y": 52,
+        "height": 758,
+        "paddingLeft": "12px",
+        "paddingRight": "12px",
+        "paddingTop": "12px",
+        "paddingBottom": "12px"
+      },
+      "nav": {
+        "height": 36,
+        "width": 192,
+        "fontSize": "15px",
+        "lineHeight": "20px",
+        "fontWeight": "550",
+        "borderTopLeftRadius": "6px",
+        "paddingLeft": "8px",
+        "paddingRight": "8px",
+        "paddingTop": "8px",
+        "paddingBottom": "8px",
+        "gap": "8px"
+      },
+      "panel": {
+        "x": 216,
+        "y": 52,
+        "width": 1216,
+        "height": 750,
+        "borderTopLeftRadius": "24px",
+        "borderBottomLeftRadius": "16px",
+        "backgroundColor": "rgb(26, 26, 26)",
+        "borderTopColor": "rgb(48, 48, 47)"
+      },
+      "heading": {
+        "x": 424,
+        "y": 93,
+        "fontSize": "24px",
+        "lineHeight": "32px",
+        "fontWeight": "600",
+        "color": "rgb(233, 232, 225)"
+      },
+      "historyList": {
+        "x": 424,
+        "width": 800,
+        "borderTopLeftRadius": "16px",
+        "borderTopColor": "rgb(48, 48, 47)"
+      },
+      "historyTime": {
+        "width": 98,
+        "fontSize": "13px",
+        "lineHeight": "20px",
+        "paddingLeft": "16px",
+        "paddingTop": "16px",
+        "color": "rgb(157, 156, 152)"
+      },
+      "historyText": {
+        "x": 523,
+        "width": 700,
+        "fontSize": "15px",
+        "lineHeight": "20px",
+        "fontWeight": "400",
+        "paddingLeft": "16px",
+        "color": "rgb(233, 232, 225)"
+      }
+    }
+  },
+  "settingsDialog": {
+    "width": 960,
+    "height": 640,
+    "borderTopLeftRadius": "12px",
+    "navWidth": 209
+  }
+}

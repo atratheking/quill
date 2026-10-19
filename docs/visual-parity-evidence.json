@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-19",
+  "tool": "REA 6.7.0",
+  "reference": {
+    "version": "1.6.1174",
+    "url": "https://dl.wisprflow.com/wispr-flow/darwin/arm64/dmgs/Flow-v1.6.1174.dmg",
+    "artifactSha256": "dc56b610fb46d34dabf7871a270f307c665371de3f28b492c687eca2af09faf4",
+    "evidenceId": "ev_6907af654661a34b05998013b1e55a63672be49fbfecdf467fdc083065619672",
+    "selectedSources": [
+      "package.json",
+      ".webpack/renderer/hub/index.html",
+      ".webpack/renderer/hub/index.js",
+      ".webpack/renderer/hub/preload.js"
+    ],
+    "coverage": "Selected static sources only; signed-in runtime not observed. 179 inventoried files not selected. Three unpacked native integrity contradictions recorded; complete app signature verified independently."
+  },
+  "quill": {
+    "evidenceId": "ev_5e724137be051fbb4ca3534364c8aefd616bb5d05beec0bee1bfa19111603e7e",
+    "rendererArtifactSha256": "6d8484bad92b0c25354b6e86308d22683483fed2e50fb3d6a7d5ebe4c2217a69"
+  },
+  "verification": {
+    "method": "Measured styles from an inert fixture constructed using shipped CSS; real Quill renderer captured separately. No full screenshot-equivalence score.",
+    "layoutAssertions": 151,
+    "viewportWidths": [
+      1200,
+      960,
+      1440
+    ],
+    "viewportHeight": 810,
+    "runtime": "macOS Apple Silicon / Electron 44.7.2",
+    "unitTests": 22
+  }
+}
